@@ -1,6 +1,7 @@
 import { WASocket, WAMessage } from '@whiskeysockets/baileys';
 import { handleText } from './text';
-import { handleSticker } from './sticker';
+import { handleImage } from './image';
+import { handleVideo } from './video';
 import { DEFAULT_MESSAGE, ERROR_MESSAGE } from '../constants/messages';
 
 export const handleMessage = async (
@@ -10,21 +11,55 @@ export const handleMessage = async (
   const sender = msg.key.remoteJid as string;
 
   try {
-    // Detect message type and route
-    if (msg.message?.conversation || msg.message?.extendedTextMessage?.text) {
-      await handleText(sock, sender, msg);
-    } else if (msg.message?.imageMessage || msg.message?.videoMessage) {
-      await handleSticker(sock, sender, msg);
-    } else {
-      // Unsupported message type
-      await sock.sendMessage(sender, {
-        text: DEFAULT_MESSAGE,
-      });
+    const messageType = getMessageType(msg);
+
+    switch (messageType) {
+      case 'text':
+        await handleText(sock, sender, msg);
+        break;
+
+      case 'image':
+        await handleImage(sock, sender, msg);
+        break;
+
+      case 'video':
+        await handleVideo(sock, sender, msg);
+        break;
+
+      default:
+        await sock.sendMessage(sender, {
+          text: DEFAULT_MESSAGE,
+        });
+        break;
     }
+
+    // // Detect message type and route
+    // if (msg.message?.conversation || msg.message?.extendedTextMessage?.text) {
+    //   await handleText(sock, sender, msg);
+    // } else if (msg.message?.imageMessage || msg.message?.videoMessage) {
+    //   await handleImage(sock, sender, msg);
+    // } else {
+    //   // Unsupported message type
+    //   await sock.sendMessage(sender, {
+    //     text: DEFAULT_MESSAGE,
+    //   });
+    // }
   } catch (error) {
     console.error('❌ Error processing message:', error);
     await sock.sendMessage(sender, {
       text: ERROR_MESSAGE,
     });
+  }
+};
+
+const getMessageType = (msg: WAMessage): string => {
+  if (msg.message?.conversation || msg.message?.extendedTextMessage?.text) {
+    return 'text';
+  } else if (msg.message?.imageMessage) {
+    return 'image';
+  } else if (msg.message?.videoMessage) {
+    return 'video';
+  } else {
+    return 'unknown';
   }
 };

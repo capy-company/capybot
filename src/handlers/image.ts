@@ -1,5 +1,5 @@
 import { WASocket, WAMessage } from '@whiskeysockets/baileys';
-import { processImageToSticker } from '../services/sticker';
+import { processImageToSticker } from '../services/image';
 import {
   ERROR_MESSAGE,
   UNSUPPORTED_MESSAGE,
@@ -11,7 +11,7 @@ import {
   cleanTempFiles,
 } from '../services/media';
 
-export const handleSticker = async (
+export const handleImage = async (
   sock: WASocket,
   sender: string,
   msg: WAMessage

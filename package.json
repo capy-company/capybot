@@ -36,7 +36,9 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@types/fluent-ffmpeg": "^2.1.27",
     "@whiskeysockets/baileys": "^6.7.18",
+    "fluent-ffmpeg": "^2.1.3",
     "pino": "^9.7.0",
     "qrcode-terminal": "^0.12.0",
     "sharp": "^0.32.6"
