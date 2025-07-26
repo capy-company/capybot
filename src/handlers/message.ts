@@ -32,18 +32,6 @@ export const handleMessage = async (
         });
         break;
     }
-
-    // // Detect message type and route
-    // if (msg.message?.conversation || msg.message?.extendedTextMessage?.text) {
-    //   await handleText(sock, sender, msg);
-    // } else if (msg.message?.imageMessage || msg.message?.videoMessage) {
-    //   await handleImage(sock, sender, msg);
-    // } else {
-    //   // Unsupported message type
-    //   await sock.sendMessage(sender, {
-    //     text: DEFAULT_MESSAGE,
-    //   });
-    // }
   } catch (error) {
     console.error('❌ Error processing message:', error);
     await sock.sendMessage(sender, {
