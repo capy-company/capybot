@@ -1,56 +1,41 @@
 import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs';
 import path from 'path';
+import { VIDEO_STICKER_CONFIG } from '../constants/config';
 
-const VIDEO_STICKER_CONFIG = {
-  maxDuration: 10, // seconds
-  maxFileSize: 500 * 1024, // 500KB
-  dimensions: {
-    width: 512,
-    height: 512,
-  },
-  fps: 60,
-  quality: 'medium',
-} as const;
-
-export async function processVideoToAnimatedSticker(
+export const processVideoToAnimatedSticker = async (
   videoPath: string,
   outputPath?: string
-): Promise<Buffer> {
+): Promise<Buffer> => {
   const tempDir = './temp';
   const timestamp = Date.now();
   const tempOutputPath =
     outputPath || path.join(tempDir, `sticker_${timestamp}.webp`);
 
   try {
-    console.log('🎬 Iniciando processamento de vídeo para sticker animado...');
+    console.log('🎬 Starting video processing...');
 
-    // Garantir que pasta temp existe
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir, { recursive: true });
     }
 
-    // 1. Validar vídeo
     await validateVideoForSticker(videoPath);
 
-    // 2. Processar vídeo com FFmpeg
     await processVideoWithFFmpeg(videoPath, tempOutputPath);
 
-    // 3. Ler resultado
     const stickerBuffer = fs.readFileSync(tempOutputPath);
 
-    // 4. Limpar arquivo temporário
     if (fs.existsSync(tempOutputPath)) {
       fs.unlinkSync(tempOutputPath);
     }
 
-    console.log(`✅ Sticker animado criado: ${stickerBuffer.length} bytes`);
+    console.log(`✅ Animated sticker created: ${stickerBuffer.length} bytes`);
     return stickerBuffer;
-  } catch (error) {
-    console.error('❌ Erro ao processar vídeo:', error);
-    throw new Error(`Falha no processamento do vídeo: ${error.message}`);
+  } catch (error: any) {
+    console.error('❌ Error processing video:', error);
+    throw new Error(`Video processing failed: ${error?.message}`);
   }
-}
+};
 
 const processVideoWithFFmpeg = (
   inputPath: string,
@@ -78,17 +63,17 @@ const processVideoWithFFmpeg = (
       .format('webp')
 
       // Event handlers
-      .on('start', commandLine => {
+      .on('start', (commandLine: string) => {
         console.log('🔄 FFmpeg started:', commandLine);
       })
-      .on('progress', progress => {
+      .on('progress', (progress: any) => {
         console.log(`📊 Progress: ${Math.round(progress.percent || 0)}%`);
       })
       .on('end', () => {
         console.log('✅ FFmpeg processing completed');
         resolve();
       })
-      .on('error', error => {
+      .on('error', (error: any) => {
         console.error('❌ FFmpeg error:', error);
         reject(error);
       })
@@ -113,7 +98,6 @@ const validateVideoForSticker = async (videoPath: string): Promise<void> => {
         return;
       }
 
-      // Verificar duração
       const duration = metadata.format.duration ?? 0;
       if (duration > VIDEO_STICKER_CONFIG.maxDuration) {
         reject(
@@ -124,10 +108,8 @@ const validateVideoForSticker = async (videoPath: string): Promise<void> => {
         return;
       }
 
-      // Verificar tamanho do arquivo
       const fileSize = metadata.format.size ?? 0;
-      if (fileSize > 50 * 1024 * 1024) {
-        // 50MB max input
+      if (fileSize > VIDEO_STICKER_CONFIG.maxFileSize) {
         reject(new Error('File too large. Maximum: 50MB'));
         return;
       }
@@ -145,15 +127,12 @@ export const optimizeVideoForProcessing = async (
   outputPath: string
 ): Promise<string> => {
   return new Promise((resolve, reject) => {
-    console.log(' Otimizando vídeo...');
+    console.log(' Optimizing vídeo...');
 
     ffmpeg(inputPath)
-      // Reduzir resolução se muito grande
       .size('720x720')
       .fps(15)
       .duration(VIDEO_STICKER_CONFIG.maxDuration)
-
-      // Codec eficiente
       .videoCodec('libx264')
       .outputOptions([
         '-preset fast',
@@ -163,7 +142,7 @@ export const optimizeVideoForProcessing = async (
 
       .output(outputPath)
       .on('end', () => {
-        console.log(' Video optimized');
+        console.log('✅ Video optimized');
         resolve(outputPath);
       })
       .on('error', reject)
@@ -176,7 +155,7 @@ export const isVideoFile = (mimetype: string): boolean => {
     'video/mp4',
     'video/mpeg',
     'video/quicktime',
-    'video/x-msvideo', // AVI
+    'video/x-msvideo',
     'video/webm',
   ];
 
@@ -204,7 +183,6 @@ export const estimateStickerSize = async (
       const fps = VIDEO_STICKER_CONFIG.fps;
       const totalFrames = duration * fps;
 
-      // Estimativa grosseira: ~2KB por frame para WebP
       const estimatedSize = totalFrames * 2 * 1024;
 
       resolve({

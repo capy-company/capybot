@@ -7,12 +7,19 @@ import {
 } from '../services/video';
 import fs from 'fs';
 import path from 'path';
+import {
+  ERROR_UNSUPPORTED_VIDEO_MESSAGE,
+  ERROR_MAX_DURATION_VIDEO_MESSAGE,
+  PROCESSING_VIDEO_MESSAGE,
+  ERROR_VIDEO_MESSAGE,
+} from '../constants/messages';
+import { VIDEO_STICKER_CONFIG } from '../constants/config';
 
-export async function handleVideo(
+export const handleVideo = async (
   sock: WASocket,
   sender: string,
   msg: WAMessage
-): Promise<void> {
+): Promise<void> => {
   const phoneNumber = sender.replace('@s.whatsapp.net', '');
 
   console.log(`🎬 Video received from ${phoneNumber}`);
@@ -21,26 +28,21 @@ export async function handleVideo(
     const videoMessage = msg.message?.videoMessage;
     if (!videoMessage || !isVideoFile(videoMessage.mimetype ?? '')) {
       await sock.sendMessage(sender, {
-        text: '❌ Formato de vídeo não suportado.\n\nFormatos aceitos: MP4, MOV, AVI, WebM',
+        text: ERROR_UNSUPPORTED_VIDEO_MESSAGE,
       });
       return;
     }
 
     const duration = videoMessage.seconds ?? 0;
-    if (duration > 10) {
+    if (duration > VIDEO_STICKER_CONFIG.maxDuration) {
       await sock.sendMessage(sender, {
-        text: `⏰ Vídeo muito longo!
-
-📏 *Duração atual:* ${duration}s
-⚡ *Máximo aceito:* 10s
-
-✂️ *Dica:* Corte seu vídeo para 10 segundos ou menos e envie novamente.`,
+        text: ERROR_MAX_DURATION_VIDEO_MESSAGE,
       });
       return;
     }
 
     await sock.sendMessage(sender, {
-      text: '🎬 Processando vídeo para GIF animado...\n\n⏳ Isso pode levar 30-60 segundos, aguarde!',
+      text: PROCESSING_VIDEO_MESSAGE,
     });
 
     console.log('⬇️ Downloading video...');
@@ -79,10 +81,8 @@ export async function handleVideo(
   } catch (error) {
     console.error('❌ An error occurred while processing the video :', error);
 
-    const errorMessage = '😅 Ops! Erro ao processar seu vídeo.';
-
     await sock.sendMessage(sender, {
-      text: `${errorMessage}\n\n💡 *Dicas:*\n• Vídeos até 10 segundos\n• Formatos: MP4, MOV\n• Tamanho máximo: 50MB\n\nTente novamente! 🎯`,
+      text: ERROR_VIDEO_MESSAGE,
     });
   }
-}
+};

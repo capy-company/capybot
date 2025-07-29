@@ -29,7 +29,7 @@ export const downloadMedia = async (msg: WAMessage): Promise<Buffer> => {
 
     console.log(`✅ Media downloaded: ${buffer.length} bytes`);
     return buffer as Buffer;
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Error downloading media:', error);
     throw new Error(`Media download failed: ${error.message}`);
   }
