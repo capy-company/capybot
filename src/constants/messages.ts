@@ -1,4 +1,4 @@
-import { VIDEO_STICKER_CONFIG } from '../services/video';
+import { VIDEO_STICKER_CONFIG } from '../constants/config';
 export const HELP_MESSAGE = `🤖 *CapyBot - Ajuda*
 
 📸 *Como usar:*
