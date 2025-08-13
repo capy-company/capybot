@@ -107,6 +107,7 @@ npm run dev
    - Tap "Link a Device"
    - Scan the QR code displayed in your terminal
 3. **Wait for connection** - you should see "✅ CapyBot connected successfully!" in your terminal
+4. Send a message to your own number (if you're using your own WhatsApp account) or to the number to which you've linked the bot.
 
 ## Project Structure
 
@@ -145,6 +146,13 @@ The bot uses default configurations for media processing. You can modify these i
 - **Dimensions**: 512x512 pixels
 - **FPS**: 60 frames per second
 - **Quality**: Medium
+
+### Sticker settings
+
+Sticker creation settings are located in `src/constants/config.ts`. You can adjust:
+
+- Maximum sticker size (dimensions and/or file size)
+- Sticker quality
 
 ## Troubleshooting
 
@@ -194,15 +202,15 @@ This project uses:
 
 ## Upcoming Features
 
-- [ ] Rate limiting
-  - Limit stickers per minute to prevent abuse
-  - Implement spam prevention mechanisms
-- [ ] Media Enhancements
-  - Research maximum sticker size limits
+- [ ] - Rate limiting:
+  - Limit the number of stickers per minute.
+  - Implement spam prevention mechanisms.
+- [ ] - Media enhancements:
+  - Research maximum sticker size limits.
   - Background removal for images
   - Text-to-sticker generation
-- [ ] Performance Optimizations
-  - Queue system for sticker processing
+- [ ] - Performance optimizations
+  - Queue system for processing stickers
 
 ## License
 
