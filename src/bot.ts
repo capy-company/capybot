@@ -25,6 +25,9 @@ async function startBot() {
     const { connection, lastDisconnect, qr } = update;
 
     if (qr) {
+      console.log('--------------------------------');
+      console.log(qr);
+      console.log('--------------------------------');
       console.log('QR Code received, scan with WhatsApp:');
       qrcode.generate(qr, { small: true });
     }
