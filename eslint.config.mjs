@@ -45,3 +45,4 @@ export default [
     ignores: ['node_modules/', 'dist/', 'auth_info/', 'temp/', '*.log', '*.js'],
   },
 ];
+
