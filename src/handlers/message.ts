@@ -27,9 +27,11 @@ export const handleMessage = async (
         break;
 
       default:
-        await sock.sendMessage(sender, {
-          text: DEFAULT_MESSAGE,
-        });
+        if (!msg.message?.associatedChildMessage) {
+          await sock.sendMessage(sender, {
+            text: DEFAULT_MESSAGE,
+          });
+        }
         break;
     }
   } catch (error) {
