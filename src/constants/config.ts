@@ -1,5 +1,5 @@
 export const VIDEO_STICKER_CONFIG = {
-  maxDuration: 15, // seconds
+  maxDuration: 10, // seconds
   maxFileSize: 50 * 1024 * 1024, // 50MB
   dimensions: {
     width: 512,

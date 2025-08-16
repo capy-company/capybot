@@ -72,7 +72,7 @@ export const processVideoToAnimatedStickers = async (
     }
 
     console.log(
-      `✅ Both stickers created: Square ${squareBuffer.length} bytes, Original ${originalBuffer.length} bytes`
+      `✅ Both stickers created: Square ${(squareBuffer.length / 1024).toFixed(2)} KB, Original ${(originalBuffer.length / 1024).toFixed(2)} KB`
     );
 
     return {
@@ -109,12 +109,16 @@ const processVideoWithFFmpeg = (
       .duration(VIDEO_STICKER_CONFIG.maxDuration)
       .outputOptions([
         '-c:v libwebp_anim',
-        `-vf ${videoFilter}`,
+        `-vf ${videoFilter},fps=15`, // Reduced from default 30fps to 12fps
         '-loop 0',
-        '-compression_level 4',
-        '-an',
-        '-preset default',
-        '-quality 75',
+        '-compression_level 12', // Better compression (slower but smaller files)
+        '-an', // No audio
+        '-preset default', // Optimized for still images
+        '-quality 15', // Lower quality (was 20)
+        '-qmin 15', // Minimum quality
+        '-qmax 25', // Maximum quality
+        '-pass 1', // Single pass encoding (faster)
+        '-f webp',
       ])
       .output(outputPath)
       .format('webp')
