@@ -109,15 +109,15 @@ const processVideoWithFFmpeg = (
       .duration(VIDEO_STICKER_CONFIG.maxDuration)
       .outputOptions([
         '-c:v libwebp_anim',
-        `-vf ${videoFilter},fps=15`, // Reduced from default 30fps to 12fps
+        `-vf ${videoFilter},fps=12`, // 12 FPS for good balance of smoothness and size
         '-loop 0',
-        '-compression_level 12', // Better compression (slower but smaller files)
         '-an', // No audio
-        '-preset default', // Optimized for still images
-        '-quality 15', // Lower quality (was 20)
-        '-qmin 15', // Minimum quality
-        '-qmax 25', // Maximum quality
-        '-pass 1', // Single pass encoding (faster)
+        '-preset default',
+        '-quality 50', // Balanced quality for good visual result
+        '-compression_level 6', // Higher compression for smaller files
+        '-qmin 10', // Lower minimum quality threshold
+        '-qmax 50', // Higher maximum quality threshold
+        '-method 6', // Best compression method (slower but smaller)
         '-f webp',
       ])
       .output(outputPath)
