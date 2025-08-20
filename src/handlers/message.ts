@@ -2,7 +2,17 @@ import { WASocket, WAMessage } from '@whiskeysockets/baileys';
 import { handleText } from './text';
 import { handleImage } from './image';
 import { handleVideo } from './video';
-import { DEFAULT_MESSAGE, ERROR_MESSAGE } from '../constants/messages';
+import {
+  DEFAULT_MESSAGE,
+  ERROR_MESSAGE,
+  MAINTENANCE_MESSAGE,
+} from '../constants/messages';
+import {
+  isUserNotifiedMaintenance,
+  markUserAsNotified,
+  checkMaintenanceModeChange,
+} from '../services/maintenance';
+import { MAINTENANCE_MODE } from '../constants/config';
 
 export const handleMessage = async (
   sock: WASocket,
@@ -11,6 +21,22 @@ export const handleMessage = async (
   const sender = msg.key.remoteJid as string;
 
   try {
+    const isMaintenanceMode = MAINTENANCE_MODE;
+
+    checkMaintenanceModeChange(isMaintenanceMode);
+
+    if (isMaintenanceMode) {
+      // If user hasn't been notified yet, send maintenance message
+      if (!isUserNotifiedMaintenance(sender)) {
+        await sock.sendMessage(sender, {
+          text: MAINTENANCE_MESSAGE,
+        });
+        markUserAsNotified(sender);
+        console.log(`🔧 Maintenance message sent to: ${sender}`);
+      }
+      return;
+    }
+
     const messageType = getMessageType(msg);
 
     switch (messageType) {

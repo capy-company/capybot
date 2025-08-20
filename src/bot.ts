@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import {
   fetchLatestBaileysVersion,
   makeWASocket,
@@ -7,8 +8,13 @@ import {
 import P from 'pino';
 import qrcode from 'qrcode-terminal';
 import { handleMessage } from './handlers/message';
+import { MAINTENANCE_MODE } from './constants/config';
 
 async function startBot() {
+  console.log(
+    `   Maintenance Mode: ${MAINTENANCE_MODE ? '🟡 ENABLED' : '🟢 DISABLED'}`
+  );
+
   const { state, saveCreds } = await useMultiFileAuthState('auth_info');
   const { version } = await fetchLatestBaileysVersion();
 

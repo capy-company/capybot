@@ -8,3 +8,6 @@ export const VIDEO_STICKER_CONFIG = {
   fps: 60,
   quality: 'medium',
 } as const;
+
+export const MAINTENANCE_MODE =
+  process.env.MAINTENANCE_MODE === 'true' || false;

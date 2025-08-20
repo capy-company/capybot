@@ -8,7 +8,7 @@ export const HELP_MESSAGE = `🤖 *CapyBot - Ajuda*
 - /help - Esta mensagem
 - /about - Sobre o bot`;
 
-export const ABOUT_MESSAGE = `🐾 *Sobre o CapyBot*
+export const ABOUT_MESSAGE = `*Sobre o CapyBot*
 
 Transformo suas fotos em figurinhas incríveis!
 
@@ -39,3 +39,12 @@ export const ERROR_MAX_DURATION_VIDEO_MESSAGE = `⏰ Vídeo muito longo!
 export const PROCESSING_VIDEO_MESSAGE = `🎬 Processando vídeo para GIF animado...\n\n⏳ Isso pode levar 30-60 segundos, aguarde!`;
 
 export const ERROR_VIDEO_MESSAGE = `😅 Ops! Erro ao processar seu vídeo.\n\n💡 *Dicas:*\n• Vídeos até 10 segundos\n• Formatos: MP4, MOV\n• Tamanho máximo: 50MB\n\nTente novamente! 🎯`;
+
+export const MAINTENANCE_MESSAGE = `🔧 *CapyBot em Manutenção*
+
+Estamos realizando uma manutenção para melhorar sua experiência!
+
+🕐 *Voltamos em breve*
+Aguarde um pouco e tente novamente mais tarde.
+
+Obrigado pela compreensão! 💙`;
