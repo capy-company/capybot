@@ -7,7 +7,6 @@ export const HELP_MESSAGE = `🤖 *CapyBot - Ajuda*
 
 📊 *Limite diário:*
 - Cada usuário pode criar até ${DAILY_STICKER_LIMIT} figurinhas a cada 24 horas
-- O limite é renovado às 00:00 (meia-noite)
 
 ❓ *Comandos:*
 - /help - Esta mensagem
@@ -37,14 +36,13 @@ export const ERROR_UNSUPPORTED_VIDEO_MESSAGE =
 
 export const ERROR_MAX_DURATION_VIDEO_MESSAGE = `⏰ Vídeo muito longo!
 
-📏 *Duração atual:* ${VIDEO_STICKER_CONFIG.maxDuration}s
-⚡ *Máximo aceito:* 10s
+⚡ *Máximo aceito:* ${VIDEO_STICKER_CONFIG.maxDuration}s
 
-✂️ *Dica:* Corte seu vídeo para 10 segundos ou menos e envie novamente.`;
+✂️ *Dica:* Corte seu vídeo para ${VIDEO_STICKER_CONFIG.maxDuration} segundos ou menos e envie novamente.`;
 
 export const PROCESSING_VIDEO_MESSAGE = `🎬 Processando vídeo para GIF animado...\n\n⏳ Isso pode levar 30-60 segundos, aguarde!`;
 
-export const ERROR_VIDEO_MESSAGE = `😅 Ops! Erro ao processar seu vídeo.\n\n💡 *Dicas:*\n• Vídeos até 10 segundos\n• Formatos: MP4, MOV\n• Tamanho máximo: 50MB\n\nTente novamente! 🎯`;
+export const ERROR_VIDEO_MESSAGE = `😅 Ops! Erro ao processar seu vídeo.\n\n💡 *Dicas:*\n• Vídeos até ${VIDEO_STICKER_CONFIG.maxDuration} segundos\n• Formatos: MP4, MOV\n• Tamanho máximo: 50MB\n\nTente novamente! 🎯`;
 
 export const MAINTENANCE_MESSAGE = `🔧 *CapyBot em Manutenção*
 
