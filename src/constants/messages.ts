@@ -6,7 +6,7 @@ export const HELP_MESSAGE = `🤖 *CapyBot - Ajuda*
 - Envie um vídeo (até 10s) que eu transformo em GIF animado!
 
 📊 *Limite diário:*
-- Cada usuário pode criar até ${DAILY_STICKER_LIMIT} figurinhas por dia
+- Cada usuário pode criar até ${DAILY_STICKER_LIMIT} figurinhas a cada 24 horas
 - O limite é renovado às 00:00 (meia-noite)
 
 ❓ *Comandos:*

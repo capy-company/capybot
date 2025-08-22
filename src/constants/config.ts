@@ -14,3 +14,5 @@ export const MAINTENANCE_MODE =
 
 export const DAILY_STICKER_LIMIT =
   Number(process.env.DAILY_STICKER_LIMIT) || 10;
+
+export const WHITE_LIST = process.env.WHITE_LIST?.split(',') ?? [];

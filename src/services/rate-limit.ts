@@ -1,4 +1,4 @@
-import { DAILY_STICKER_LIMIT } from '../constants/config';
+import { DAILY_STICKER_LIMIT, WHITE_LIST } from '../constants/config';
 
 interface UserStickerUsage {
   count: number;
@@ -28,6 +28,10 @@ export const canCreateSticker = (phoneNumber: string): boolean => {
 
   // If no usage record or it's a new day, user can create sticker
   if (!usage || usage.lastReset < today) {
+    return true;
+  }
+
+  if (WHITE_LIST.includes(phoneNumber)) {
     return true;
   }
 
