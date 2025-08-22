@@ -3,7 +3,7 @@ export const HELP_MESSAGE = `🤖 *CapyBot - Ajuda*
 
 📸 *Como usar:*
 - Envie uma imagem que eu transformo em figurinha!
-- Envie um vídeo (até 10s) que eu transformo em GIF animado!
+- Envie um vídeo (até ${VIDEO_STICKER_CONFIG.maxDuration}s) que eu transformo em GIF animado!
 
 📊 *Limite diário:*
 - Cada usuário pode criar até ${DAILY_STICKER_LIMIT} figurinhas a cada 24 horas
