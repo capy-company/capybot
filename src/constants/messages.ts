@@ -1,4 +1,4 @@
-import { VIDEO_STICKER_CONFIG } from '../constants/config';
+import { DAILY_STICKER_LIMIT, VIDEO_STICKER_CONFIG } from '../constants/config';
 export const HELP_MESSAGE = `🤖 *CapyBot - Ajuda*
 
 📸 *Como usar:*
@@ -6,7 +6,7 @@ export const HELP_MESSAGE = `🤖 *CapyBot - Ajuda*
 - Envie um vídeo (até 10s) que eu transformo em GIF animado!
 
 📊 *Limite diário:*
-- Cada usuário pode criar até 10 stickers por dia
+- Cada usuário pode criar até ${DAILY_STICKER_LIMIT} figurinhas por dia
 - O limite é renovado às 00:00 (meia-noite)
 
 ❓ *Comandos:*
@@ -56,18 +56,18 @@ Aguarde um pouco e tente novamente mais tarde.
 Obrigado pela compreensão! 💙`;
 
 export const DAILY_LIMIT_REACHED_MESSAGE = (remaining: number, limit: number) =>
-  `🚫 *Limite diário de stickers atingido!*
+  `🚫 *Limite diário de figurinhas atingido!*
 
-📊 *Você já criou:* ${limit - remaining}/${limit} stickers hoje
+📊 *Você já criou:* ${limit - remaining}/${limit} figurinhas hoje
 
 ⏰ *Limite renovado:* Às 00:00 (meia-noite)
 
-💡 *Dica:* Volte amanhã para criar mais stickers incríveis! 🎨`;
+💡 *Dica:* Volte amanhã para criar mais figurinhas incríveis! 🎨`;
 
 export const DAILY_LIMIT_WARNING_MESSAGE = (remaining: number, limit: number) =>
   `⚠️ *Atenção!* Você tem apenas ${remaining} sticker${remaining === 1 ? '' : 's'} restante${remaining === 1 ? '' : 's'} hoje.
 
-📊 *Uso atual:* ${limit - remaining}/${limit} stickers
+📊 *Uso atual:* ${limit - remaining}/${limit} figurinhas
 
 ⏰ *Limite renovado:* Às 00:00 (meia-noite)`;
 
@@ -78,9 +78,9 @@ export const USAGE_STATUS_MESSAGE = (
 ) =>
   `📊 *Status do seu uso diário*
 
-✅ *Stickers criados hoje:* ${used}/${limit}
-🎯 *Stickers restantes:* ${remaining}
+✅ *Figurinhas criadas hoje:* ${used}/${limit}
+🎯 *Figurinhas restantes:* ${remaining}
 
 ⏰ *Limite renovado:* Às 00:00 (meia-noite)
 
-${remaining === 0 ? '🚫 *Limite atingido!* Volte amanhã para criar mais stickers.' : remaining <= 2 ? '⚠️ *Quase no limite!* Use com moderação.' : '🟢 *Você ainda tem bastante espaço!*'}`;
+${remaining === 0 ? '🚫 *Limite atingido!* Volte amanhã para criar mais figurinhas.' : remaining <= 2 ? '⚠️ *Quase no limite!* Use com moderação.' : '🟢 *Você ainda tem bastante espaço!*'}`;
