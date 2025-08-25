@@ -17,7 +17,6 @@ import {
 } from '../constants/messages';
 import { VIDEO_STICKER_CONFIG, DAILY_STICKER_LIMIT } from '../constants/config';
 import {
-  canCreateSticker,
   recordStickerCreation,
   getRemainingStickers,
 } from '../services/rate-limit';
@@ -48,9 +47,10 @@ export const handleVideo = async (
       return;
     }
 
+    const remaining = getRemainingStickers(phoneNumber);
+
     // Check daily limit
-    if (!canCreateSticker(phoneNumber)) {
-      const remaining = getRemainingStickers(phoneNumber);
+    if (remaining <= 0) {
       await sock.sendMessage(sender, {
         text: DAILY_LIMIT_REACHED_MESSAGE(remaining, DAILY_STICKER_LIMIT),
       });
@@ -101,7 +101,6 @@ export const handleVideo = async (
       console.log('✅ Animated sticker sent successfully!');
 
       // Check if user is approaching the limit and send warning
-      const remaining = getRemainingStickers(phoneNumber);
       if (remaining <= 2 && remaining > 0) {
         await sock.sendMessage(sender, {
           text: DAILY_LIMIT_WARNING_MESSAGE(remaining, DAILY_STICKER_LIMIT),
@@ -113,6 +112,7 @@ export const handleVideo = async (
         console.log(`🗑️ Temporary files removed: ${videoPath}`);
       }
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error('❌ An error occurred while processing the video :', error);
 

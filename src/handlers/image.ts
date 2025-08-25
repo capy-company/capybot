@@ -13,7 +13,6 @@ import {
   cleanTempFiles,
 } from '../services/media';
 import {
-  canCreateSticker,
   recordStickerCreation,
   getRemainingStickers,
 } from '../services/rate-limit';
@@ -36,8 +35,9 @@ export const handleImage = async (
       return;
     }
 
-    if (!canCreateSticker(phoneNumber)) {
-      const remaining = getRemainingStickers(phoneNumber);
+    const remaining = getRemainingStickers(phoneNumber);
+
+    if (remaining <= 0) {
       await sock.sendMessage(sender, {
         text: DAILY_LIMIT_REACHED_MESSAGE(remaining, DAILY_STICKER_LIMIT),
       });
@@ -71,8 +71,6 @@ export const handleImage = async (
 
     console.log('✅ Sticker sent successfully!');
 
-    // Check if user is approaching the limit and send warning
-    const remaining = getRemainingStickers(phoneNumber);
     if (remaining <= 2 && remaining > 0) {
       await sock.sendMessage(sender, {
         text: DAILY_LIMIT_WARNING_MESSAGE(remaining, DAILY_STICKER_LIMIT),
@@ -80,6 +78,7 @@ export const handleImage = async (
     }
 
     cleanTempFiles();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error('❌ Error processing image:', error);
     await sock.sendMessage(sender, {

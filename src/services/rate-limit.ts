@@ -18,28 +18,6 @@ const getStartOfDay = (timestamp: number): number => {
 };
 
 /**
- * Checks if user has exceeded daily sticker limit
- */
-export const canCreateSticker = (phoneNumber: string): boolean => {
-  const now = Date.now();
-  const today = getStartOfDay(now);
-
-  const usage = userUsage.get(phoneNumber);
-
-  // If no usage record or it's a new day, user can create sticker
-  if (!usage || usage.lastReset < today) {
-    return true;
-  }
-
-  if (WHITE_LIST.includes(phoneNumber)) {
-    return true;
-  }
-
-  // Check if user has exceeded limit
-  return usage.count < DAILY_STICKER_LIMIT;
-};
-
-/**
  * Records that user has created a sticker
  */
 export const recordStickerCreation = (phoneNumber: string): void => {
@@ -61,7 +39,7 @@ export const recordStickerCreation = (phoneNumber: string): void => {
   }
 
   console.log(
-    `📊 User ${phoneNumber} sticker count: ${getUserStickerCount(phoneNumber)}/${DAILY_STICKER_LIMIT}`
+    `📊 User ${phoneNumber} sticker count: ${usage?.count ?? 0}/${DAILY_STICKER_LIMIT}`
   );
 };
 
@@ -85,6 +63,10 @@ export const getUserStickerCount = (phoneNumber: string): number => {
  * Gets remaining stickers for user today
  */
 export const getRemainingStickers = (phoneNumber: string): number => {
+  if (WHITE_LIST.includes(phoneNumber)) {
+    return 1000;
+  }
+
   return Math.max(0, DAILY_STICKER_LIMIT - getUserStickerCount(phoneNumber));
 };
 
