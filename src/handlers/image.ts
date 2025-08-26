@@ -4,7 +4,6 @@ import {
   ERROR_MESSAGE,
   UNSUPPORTED_MESSAGE,
   PROCESSING_MESSAGE,
-  DAILY_LIMIT_REACHED_MESSAGE,
   DAILY_LIMIT_WARNING_MESSAGE,
 } from '../constants/messages';
 import {
@@ -36,13 +35,6 @@ export const handleImage = async (
     }
 
     const remaining = getRemainingStickers(phoneNumber);
-
-    if (remaining <= 0) {
-      await sock.sendMessage(sender, {
-        text: DAILY_LIMIT_REACHED_MESSAGE(remaining, DAILY_STICKER_LIMIT),
-      });
-      return;
-    }
 
     await sock.sendMessage(sender, {
       text: PROCESSING_MESSAGE,

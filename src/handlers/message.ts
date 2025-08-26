@@ -3,6 +3,7 @@ import { handleText } from './text';
 import { handleImage } from './image';
 import { handleVideo } from './video';
 import {
+  DAILY_LIMIT_WARNING_MESSAGE,
   DEFAULT_MESSAGE,
   ERROR_MESSAGE,
   MAINTENANCE_MESSAGE,
@@ -12,7 +13,8 @@ import {
   markUserAsNotified,
   checkMaintenanceModeChange,
 } from '../services/maintenance';
-import { MAINTENANCE_MODE } from '../constants/config';
+import { DAILY_STICKER_LIMIT, MAINTENANCE_MODE } from '../constants/config';
+import { getRemainingStickers } from '../services/rate-limit';
 
 export const handleMessage = async (
   sock: WASocket,
@@ -37,6 +39,9 @@ export const handleMessage = async (
       return;
     }
 
+    const phoneNumber = sender.replace('@s.whatsapp.net', '');
+    const remaining = getRemainingStickers(phoneNumber);
+
     const messageType = getMessageType(msg);
 
     switch (messageType) {
@@ -45,10 +50,22 @@ export const handleMessage = async (
         break;
 
       case 'image':
+        if (remaining <= 0) {
+          await sock.sendMessage(sender, {
+            text: DAILY_LIMIT_WARNING_MESSAGE(remaining, DAILY_STICKER_LIMIT),
+          });
+          return;
+        }
         await handleImage(sock, sender, msg);
         break;
 
       case 'video':
+        if (remaining <= 0) {
+          await sock.sendMessage(sender, {
+            text: DAILY_LIMIT_WARNING_MESSAGE(remaining, DAILY_STICKER_LIMIT),
+          });
+          return;
+        }
         await handleVideo(sock, sender, msg);
         break;
 

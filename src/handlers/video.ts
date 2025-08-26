@@ -12,7 +12,6 @@ import {
   ERROR_MAX_DURATION_VIDEO_MESSAGE,
   PROCESSING_VIDEO_MESSAGE,
   ERROR_VIDEO_MESSAGE,
-  DAILY_LIMIT_REACHED_MESSAGE,
   DAILY_LIMIT_WARNING_MESSAGE,
 } from '../constants/messages';
 import { VIDEO_STICKER_CONFIG, DAILY_STICKER_LIMIT } from '../constants/config';
@@ -48,14 +47,6 @@ export const handleVideo = async (
     }
 
     const remaining = getRemainingStickers(phoneNumber);
-
-    // Check daily limit
-    if (remaining <= 0) {
-      await sock.sendMessage(sender, {
-        text: DAILY_LIMIT_REACHED_MESSAGE(remaining, DAILY_STICKER_LIMIT),
-      });
-      return;
-    }
 
     await sock.sendMessage(sender, {
       text: PROCESSING_VIDEO_MESSAGE,
