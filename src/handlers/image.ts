@@ -4,12 +4,18 @@ import {
   ERROR_MESSAGE,
   UNSUPPORTED_MESSAGE,
   PROCESSING_MESSAGE,
+  DAILY_LIMIT_WARNING_MESSAGE,
 } from '../constants/messages';
 import {
   downloadMedia,
   isSupportedForSticker,
   cleanTempFiles,
 } from '../services/media';
+import {
+  recordStickerCreation,
+  getRemainingStickers,
+} from '../services/rate-limit';
+import { DAILY_STICKER_LIMIT } from '../constants/config';
 
 export const handleImage = async (
   sock: WASocket,
@@ -28,6 +34,8 @@ export const handleImage = async (
       return;
     }
 
+    const remaining = getRemainingStickers(phoneNumber);
+
     await sock.sendMessage(sender, {
       text: PROCESSING_MESSAGE,
     });
@@ -37,6 +45,9 @@ export const handleImage = async (
 
     console.log('🎨 Converting to sticker...');
     const stickerBuffer = await processImageToSticker(imageBuffer);
+
+    // Record the sticker creation in rate limit service
+    recordStickerCreation(phoneNumber);
 
     if (stickerBuffer.square) {
       await sock.sendMessage(sender, {
@@ -52,7 +63,14 @@ export const handleImage = async (
 
     console.log('✅ Sticker sent successfully!');
 
+    if (remaining <= 2 && remaining > 0) {
+      await sock.sendMessage(sender, {
+        text: DAILY_LIMIT_WARNING_MESSAGE(remaining, DAILY_STICKER_LIMIT),
+      });
+    }
+
     cleanTempFiles();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error('❌ Error processing image:', error);
     await sock.sendMessage(sender, {
