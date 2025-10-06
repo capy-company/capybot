@@ -3,13 +3,7 @@ import {
   HELP_MESSAGE,
   ABOUT_MESSAGE,
   DEFAULT_MESSAGE,
-  USAGE_STATUS_MESSAGE,
 } from '../constants/messages';
-import {
-  getUserStickerCount,
-  getRemainingStickers,
-} from '../services/rate-limit';
-import { DAILY_STICKER_LIMIT } from '../constants/config';
 
 export const handleText = async (
   sock: WASocket,
@@ -31,10 +25,6 @@ export const handleText = async (
     response = HELP_MESSAGE;
   } else if (text.includes('/about') || text.includes('sobre')) {
     response = ABOUT_MESSAGE;
-  } else if (text.includes('/status') || text.includes('status')) {
-    const used = getUserStickerCount(phoneNumber);
-    const remaining = getRemainingStickers(phoneNumber);
-    response = USAGE_STATUS_MESSAGE(used, remaining, DAILY_STICKER_LIMIT);
   } else {
     response = DEFAULT_MESSAGE;
   }

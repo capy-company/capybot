@@ -160,45 +160,11 @@ Create a `.env` file in the root directory based on `env.example`:
 
 ```bash
 MAINTENANCE_MODE=false
-DAILY_STICKER_LIMIT=10
-WHITE_LIST=['5511999999999','5511888888888']
 ```
 
 #### Available Environment Variables
 
 - **`MAINTENANCE_MODE`** (default: `false`): When set to `true`, the bot will send a maintenance message to users and stop processing requests
-- **`DAILY_STICKER_LIMIT`** (default: `10`): Maximum number of stickers a user can create per day
-- **`WHITE_LIST`**: Comma-separated list of phone numbers (with country code) that bypass the daily sticker limit
-
-### Whitelist Configuration
-
-The whitelist feature allows specific phone numbers to bypass the daily sticker creation limit. This is useful for:
-
-- **Bot administrators**: Give unlimited access to bot maintainers
-- **Premium users**: Provide enhanced access to specific users
-- **Testing**: Allow unlimited testing during development
-
-#### Setting up the Whitelist
-
-1. **Add phone numbers to the whitelist** in your `.env` file:
-
-   ```bash
-   WHITE_LIST=['5511999999999','5511888888888','5511777777777']
-   ```
-
-2. **Phone number format**:
-   - Include the country code (e.g., `55` for Brazil, `1` for US)
-   - Remove any spaces, dashes, or special characters
-   - Example: `5511999999999` for a Brazilian number
-
-3. **Multiple numbers**: Separate multiple phone numbers with commas
-
-#### How Whitelist Works
-
-- Whitelisted users can create unlimited stickers per day
-- Non-whitelisted users are limited by the `DAILY_STICKER_LIMIT` setting
-- The whitelist check happens before rate limiting
-- Changes to the whitelist require a bot restart to take effect
 
 ### Sticker settings
 
