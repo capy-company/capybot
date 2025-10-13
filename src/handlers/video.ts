@@ -12,13 +12,8 @@ import {
   ERROR_MAX_DURATION_VIDEO_MESSAGE,
   PROCESSING_VIDEO_MESSAGE,
   ERROR_VIDEO_MESSAGE,
-  DAILY_LIMIT_WARNING_MESSAGE,
 } from '../constants/messages';
-import { VIDEO_STICKER_CONFIG, DAILY_STICKER_LIMIT } from '../constants/config';
-import {
-  recordStickerCreation,
-  getRemainingStickers,
-} from '../services/rate-limit';
+import { VIDEO_STICKER_CONFIG } from '../constants/config';
 
 export const handleVideo = async (
   sock: WASocket,
@@ -46,8 +41,6 @@ export const handleVideo = async (
       return;
     }
 
-    const remaining = getRemainingStickers(phoneNumber);
-
     await sock.sendMessage(sender, {
       text: PROCESSING_VIDEO_MESSAGE,
     });
@@ -74,9 +67,6 @@ export const handleVideo = async (
       console.log('🎨 Converting to GIF...');
       const stickerBuffer = await processVideoToAnimatedStickers(videoPath);
 
-      // Record the sticker creation in rate limit service
-      recordStickerCreation(phoneNumber);
-
       if (stickerBuffer.square) {
         await sock.sendMessage(sender, {
           sticker: stickerBuffer.square,
@@ -90,13 +80,6 @@ export const handleVideo = async (
       }
 
       console.log('✅ Animated sticker sent successfully!');
-
-      // Check if user is approaching the limit and send warning
-      if (remaining <= 2 && remaining > 0) {
-        await sock.sendMessage(sender, {
-          text: DAILY_LIMIT_WARNING_MESSAGE(remaining, DAILY_STICKER_LIMIT),
-        });
-      }
     } finally {
       if (fs.existsSync(videoPath)) {
         fs.unlinkSync(videoPath);
