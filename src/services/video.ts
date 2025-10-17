@@ -100,8 +100,9 @@ const processVideoWithFFmpeg = (
       videoFilter =
         'scale=512:512:force_original_aspect_ratio=increase,crop=512:512';
     } else {
-      // Original format, just resize keeping proportion (max 512px)
-      videoFilter = 'scale=512:512:force_original_aspect_ratio=decrease';
+      // Use pad filter to add transparent padding while preserving aspect ratio
+      videoFilter =
+        'scale=512:512:force_original_aspect_ratio=decrease,pad=512:512:(ow-iw)/2:(oh-ih)/2:color=0x00000000';
     }
 
     ffmpeg(inputPath)
@@ -109,6 +110,7 @@ const processVideoWithFFmpeg = (
       .duration(VIDEO_STICKER_CONFIG.maxDuration)
       .outputOptions([
         '-c:v libwebp_anim',
+        '-pix_fmt yuva420p', // Best pixel format for cross-platform compatibility
         `-vf ${videoFilter},fps=12`, // 12 FPS for good balance of smoothness and size
         '-loop 0',
         '-an', // No audio
@@ -118,6 +120,7 @@ const processVideoWithFFmpeg = (
         '-qmin 10', // Lower minimum quality threshold
         '-qmax 50', // Higher maximum quality threshold
         '-method 6', // Best compression method (slower but smaller)
+        '-metadata:s:v:0 alpha_mode=1', // Ensure alpha channel metadata for transparency
         '-f webp',
       ])
       .output(outputPath)
